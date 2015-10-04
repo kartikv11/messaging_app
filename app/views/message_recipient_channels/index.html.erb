@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Message Recipient Channels</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Message</th>
+      <th>Channel</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @message_recipient_channels.each do |message_recipient_channel| %>
+      <tr>
+        <td><%= message_recipient_channel.message %></td>
+        <td><%= message_recipient_channel.channel %></td>
+        <td><%= link_to 'Show', message_recipient_channel %></td>
+        <td><%= link_to 'Edit', edit_message_recipient_channel_path(message_recipient_channel) %></td>
+        <td><%= link_to 'Destroy', message_recipient_channel, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Message recipient channel', new_message_recipient_channel_path %>

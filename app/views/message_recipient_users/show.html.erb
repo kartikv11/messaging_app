@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= @message_recipient_user.user %>
+</p>
+
+<p>
+  <strong>Message:</strong>
+  <%= @message_recipient_user.message %>
+</p>
+
+<%= link_to 'Edit', edit_message_recipient_user_path(@message_recipient_user) %> |
+<%= link_to 'Back', message_recipient_users_path %>

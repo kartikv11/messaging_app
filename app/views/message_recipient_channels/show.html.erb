@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Message:</strong>
+  <%= @message_recipient_channel.message %>
+</p>
+
+<p>
+  <strong>Channel:</strong>
+  <%= @message_recipient_channel.channel %>
+</p>
+
+<%= link_to 'Edit', edit_message_recipient_channel_path(@message_recipient_channel) %> |
+<%= link_to 'Back', message_recipient_channels_path %>

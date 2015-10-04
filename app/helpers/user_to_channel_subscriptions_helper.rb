@@ -1,0 +1,2 @@
+module UserToChannelSubscriptionsHelper
+end
