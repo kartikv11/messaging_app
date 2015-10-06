@@ -1,4 +1,4 @@
-class UserToChannelSubscriptionsController < ApplicationController
+class UserToChannelSubscriptionController < ApplicationController
   before_action :set_user_to_channel_subscription, only: [:show, :edit, :update, :destroy]
 
   # GET /user_to_channel_subscriptions
@@ -25,40 +25,19 @@ class UserToChannelSubscriptionsController < ApplicationController
   # POST /user_to_channel_subscriptions.json
   def create
     @user_to_channel_subscription = UserToChannelSubscription.new(user_to_channel_subscription_params)
-
-    respond_to do |format|
-      if @user_to_channel_subscription.save
-        format.html { redirect_to @user_to_channel_subscription, notice: 'User to channel subscription was successfully created.' }
-        format.json { render :show, status: :created, location: @user_to_channel_subscription }
-      else
-        format.html { render :new }
-        format.json { render json: @user_to_channel_subscription.errors, status: :unprocessable_entity }
-      end
-    end
+    @user_to_channel_subscription.save
   end
 
   # PATCH/PUT /user_to_channel_subscriptions/1
   # PATCH/PUT /user_to_channel_subscriptions/1.json
   def update
-    respond_to do |format|
-      if @user_to_channel_subscription.update(user_to_channel_subscription_params)
-        format.html { redirect_to @user_to_channel_subscription, notice: 'User to channel subscription was successfully updated.' }
-        format.json { render :show, status: :ok, location: @user_to_channel_subscription }
-      else
-        format.html { render :edit }
-        format.json { render json: @user_to_channel_subscription.errors, status: :unprocessable_entity }
-      end
-    end
+    @user_to_channel_subscription.update(user_to_channel_subscription_params)
   end
 
   # DELETE /user_to_channel_subscriptions/1
   # DELETE /user_to_channel_subscriptions/1.json
   def destroy
     @user_to_channel_subscription.destroy
-    respond_to do |format|
-      format.html { redirect_to user_to_channel_subscriptions_url, notice: 'User to channel subscription was successfully destroyed.' }
-      format.json { head :no_content }
-    end
   end
 
   private

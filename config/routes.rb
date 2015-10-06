@@ -7,6 +7,12 @@ Rails.application.routes.draw do
   resources :message_recipient_users
   resources :messages
   resources :users
+  get 'get_all_users_for_the_channel' => 'users#get_all_users_for_the_channel'
+  get 'get_all_messages_received_by_the_user' => 'users#get_all_messages_received_by_the_user'
+  get 'get_all_messages_for_the_channel' => 'messages#get_all_messages_for_the_channel'
+  get 'get_all_channels_for_user' => 'users#get_all_channels_for_user'
+  post 'set_message_from_user_to_user' => 'users#set_message_from_user_to_user'
+  post 'set_message_from_user_to_channel' => 'users#set_message_from_user_to_channel'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

@@ -12,6 +12,8 @@ class MessageRecipientUsersController < ApplicationController
   def show
   end
 
+
+
   # GET /message_recipient_users/new
   def new
     @message_recipient_user = MessageRecipientUser.new
@@ -25,40 +27,19 @@ class MessageRecipientUsersController < ApplicationController
   # POST /message_recipient_users.json
   def create
     @message_recipient_user = MessageRecipientUser.new(message_recipient_user_params)
-
-    respond_to do |format|
-      if @message_recipient_user.save
-        format.html { redirect_to @message_recipient_user, notice: 'Message recipient user was successfully created.' }
-        format.json { render :show, status: :created, location: @message_recipient_user }
-      else
-        format.html { render :new }
-        format.json { render json: @message_recipient_user.errors, status: :unprocessable_entity }
-      end
-    end
+    @message_recipient_user.save
   end
 
   # PATCH/PUT /message_recipient_users/1
   # PATCH/PUT /message_recipient_users/1.json
   def update
-    respond_to do |format|
-      if @message_recipient_user.update(message_recipient_user_params)
-        format.html { redirect_to @message_recipient_user, notice: 'Message recipient user was successfully updated.' }
-        format.json { render :show, status: :ok, location: @message_recipient_user }
-      else
-        format.html { render :edit }
-        format.json { render json: @message_recipient_user.errors, status: :unprocessable_entity }
-      end
-    end
+    @message_recipient_user.update(message_recipient_user_params)
   end
 
   # DELETE /message_recipient_users/1
   # DELETE /message_recipient_users/1.json
   def destroy
     @message_recipient_user.destroy
-    respond_to do |format|
-      format.html { redirect_to message_recipient_users_url, notice: 'Message recipient user was successfully destroyed.' }
-      format.json { head :no_content }
-    end
   end
 
   private
