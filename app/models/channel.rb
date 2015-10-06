@@ -14,12 +14,18 @@ class Channel < ActiveRecord::Base
 	
 	#validates channel name to be present and length be minimum 1 to maximum 20 characters
 	validates :channel_name, presence: true, length: { minimum: 1,  maximum: 20 }
+
+	after_initialize :init
 	
+	def init
+	  self.is_private  ||= true
+	end
+
 	def self.exists?(channel_id)
       Channel.find_by(channel_id: channel_id)
     end
 
-    def is_private(channel)
-      Channel.is_private
+    def self.is_private?(channel_id)
+      Channel.find_by(channel_id: channel_id).is_private
     end
 end

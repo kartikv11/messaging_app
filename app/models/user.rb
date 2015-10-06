@@ -28,7 +28,8 @@ class User < ActiveRecord::Base
 	#Converts the Email id to downcase before saving
 	before_save { self.email_id = email_id.downcase }
 
-	  def self.exists?(id)
+
+	  def self.exists(id)
       User.find_by_id(id: id)
     end
     

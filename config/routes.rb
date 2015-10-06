@@ -13,6 +13,8 @@ Rails.application.routes.draw do
   get 'get_all_channels_for_user' => 'users#get_all_channels_for_user'
   post 'set_message_from_user_to_user' => 'users#set_message_from_user_to_user'
   post 'set_message_from_user_to_channel' => 'users#set_message_from_user_to_channel'
+  post 'subscribe_user_to_channel' => 'users#subscribe_user_to_channel'
+  post 'unsubscribe_user_to_channel' => 'users#unsubscribe_user_to_channel'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

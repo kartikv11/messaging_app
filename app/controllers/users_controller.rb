@@ -1,7 +1,5 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy]
-  
-  Error = "Does not exist"
   # GET /users
   # GET /users.json
   def index
@@ -86,7 +84,7 @@ class UsersController < ApplicationController
     failure = "FAILURE"
     fromUser = User.find_by_id(params[:from_user_id])
     toUser = User.find_by_id(params[:to_user_id])
-    if (fromUser && toUser)
+    if (fromUser && toUser )
       message = Message.new(content: params[:content])
       message.user = fromUser
       to = MessageRecipientUser.new(user: toUser)
@@ -109,30 +107,106 @@ class UsersController < ApplicationController
     render json: response_data
   end
 
+  def subscribe_user_to_channel
+    success = "SUCCESS"
+    failure = "FAILURE"
+    userInstance = User.find(params[:user_id])
+    channelInstance = Channel.find(params[:channel_id])
+      if (userInstance && channelInstance)
+        userInstance.channels << channelInstance
+        response_data = {
+              :payload => {},
+              :meta => {},
+              :error => {},
+              :status => success
+            }
+      else
+        response_data = {
+              :payload => {},
+              :meta => {},
+              :error => {},
+              :status => failure
+            }
+      end
+
+    render json: response_data
+
+  end
+
+  def unsubscribe_user_to_channel
+    success = "SUCCESS"
+    failure = "FAILURE"
+    user = User.find(params[:user_id])
+    channel = Channel.find(params[:channel_id])
+    if (user && channel)
+        UserToChannelSubscription.delete_all(user: user,channel: channel)
+        response_data = {
+              :payload => {},
+              :meta => {},
+              :error => {},
+              :status => success
+            }
+      else
+        response_data = {
+              :payload => {},
+              :meta => {},
+              :error => {},
+              :status => failure
+            }
+      end
+
+    render json: response_data
+
+  end
+
   def set_message_from_user_to_channel
     success = "SUCCESS"
     failure = "FAILURE"
-    fromUser = User.find_by_id(params[:from_user_id])
-    toChannel = User.find_by_id(params[:to_channel_id])
+    isPrivate = "PRIVATE AND NOT SUBSCRIBED"
+    notExists = "Does not Exist"
+    fromUser = User.find(params[:from_user_id])
+    toChannel = Channel.find(params[:to_channel_id])
     if (fromUser && toChannel)
-      if(toChannel.is_private?)
-      message = Message.new(content: params[:content])
-      message.user = fromUser
-      to = MessageRecipientChannel.new(channel: toChannel)
-      message.message_recipient_channels << to
-      message.save!
-      response_data = {
-          :payload => {},
-          :meta => {},
-          :error => {},
-          :status => success
-        }
+      if (toChannel.is_private)
+        if(UserToChannelSubscription.find_by(user: fromUser,channel: toChannel))
+          message = Message.new(content: params[:content])
+          message.user = fromUser
+          to = MessageRecipientChannel.new(channel: toChannel)
+          message.message_recipient_channels << to
+          message.save!
+          response_data = {
+              :payload => {},
+              :meta => {},
+              :error => {},
+              :status => success
+            }
+        else
+          response_data = {
+              :payload => {},
+              :meta => {},
+              :error => {},
+              :status => isPrivate
+            }
+        end
+      else
+          message = Message.new(content: params[:content])
+          message.user = fromUser
+          to = MessageRecipientChannel.new(channel: toChannel)
+          message.message_recipient_channels << to
+          message.save!
+          response_data = {
+              :payload => {},
+              :meta => {},
+              :error => {},
+              :status => success
+            }
+      end
     else
       response_data = {
           :payload => {},
           :meta => {},
           :error => {},
-          :status => failure
+          :status => notExists
         }
     end
     render json: response_data
