@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
 
   has_many :message_recipient_users, dependent: :destroy
 
-  has_many :user_to_channel_subscriptions, :foreign_key => 'user_id'
+  has_many :user_to_channel_subscriptions
 
   has_many :channels, through: :user_to_channel_subscriptions, dependent: :destroy
 
@@ -28,28 +28,24 @@ class User < ActiveRecord::Base
 	#Converts the Email id to downcase before saving
 	before_save { self.email_id = email_id.downcase }
 
+  after_initialize :init
+  
+  def init
+    self.is_active  ||= false
+  end
 
-	  def self.exists(id)
-      User.find_by_id(id: id)
-    end
-    
-    def self.find_by_email_id(email_id)
-      User.find_by(email_id: email_id)
-    end
 
-    def save_user
-      self.save!
-    end
+  def self.exists(id)
+    User.find_by_id(id: id)
+  end
 
-    def change_user_state_to_active
-      if self.is_active?
-        self.is_active!
-      end
-    end
+  def self.find_by_email_id(email_id)
+    User.find_by(email_id: email_id)
+  end
+  
+  def self.create_user(params)
+    user = User.create!(full_name: params[:full_name],team_name: params[:team_name],
+                        email_id: params[:email_id],password: params[:password])
+  end
 
-    def change_user_state_to_inactive
-      if ( self.is_active==false )
-      	self.is_active = true
-      end
-    end
 end

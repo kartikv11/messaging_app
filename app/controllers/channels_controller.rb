@@ -7,36 +7,30 @@ class ChannelsController < ApplicationController
     @channels = Channel.all
   end
 
-  # GET /channels/1
-  # GET /channels/1.json
-  def show
-  end
-
-
-  # GET /channels/new
-  def new
-    @channel = Channel.new
-  end
-
-  # GET /channels/1/edit
-  def edit
-  end
-
-  # POST /channels
-  # POST /channels.json
-  def create
-    @channel = Channel.new(channel_params)
-  end
-
-  # PATCH/PUT /channels/1
-  # PATCH/PUT /channels/1.json
-  def updates
-  end
-
-  # DELETE /channels/1
-  # DELETE /channels/1.json
-  def destroy
-    @channel.destroy
+  # /POST
+  # [register_channel API]
+  # parameters: channel_name
+  # @return [type] [description]
+  def register_channel
+    success = "success"
+    failure = "failure"
+      Channel.create_channel(channel_params)
+      if(Channel.create_channel(channel_params))
+      response_data = {
+              :payload => {},
+              :meta => {},
+              :error => {},
+              :status => success
+            }
+      else
+      response_data = {
+              :payload => {},
+              :meta => {},
+              :error => {},
+              :status => failure
+            }
+    end
+    render json: response_data
   end
 
   private

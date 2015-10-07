@@ -12,6 +12,35 @@ class UsersController < ApplicationController
     render json: response_data
   end
 
+    # 
+    # [register_user API]
+    # parameters: full_name,team_name,email_id,password
+    # @return [type] [description]  
+  def register_user
+    success = "SUCCESS"
+    failure = "FAILURE"
+    if(User.create_user(user_params))
+      response_data = {
+              :payload => {},
+              :meta => {},
+              :error => {},
+              :status => success
+            }
+    else
+      response_data = {
+              :payload => {},
+              :meta => {},
+              :error => {},
+              :status => failure
+            }
+    end
+    render json: response_data
+  end
+
+  # /GET
+  # [get_all_channels_for_user API]
+  # parameters: user_id
+  # @return [type] [description]
   def get_all_channels_for_user
     user = User.find_by_id(params[:user_id])
     channels = []
@@ -34,15 +63,19 @@ class UsersController < ApplicationController
     render json: response_data
   end
 
+  # /GET
+  # [get_all_users_for_the_channel API]
+  # parameters: channel_id
+  # @return [type] [description]
   def get_all_users_for_the_channel
-    user = []
-    channel = Channel.find_by_id(params[:channel_id])
-    if (channel)
-      channel.users.each do |item|
-        user << {:user_id => item["id"], :full_name => item["full_name"], :email_id => item["email_id"]}
+    userInstance = []
+    channelInstance = Channel.find_by_id(params[:channel_id])
+    if (channelInstance)
+      channelInstance.users.each do |item|
+        userInstance << {:user_id => item["id"], :full_name => item["full_name"], :email_id => item["email_id"]}
       end
       response_data = {
-          :payload => { :users => user},
+          :payload => { :users => userInstance},
           :meta => {},
           :error => {}
         }
@@ -56,12 +89,17 @@ class UsersController < ApplicationController
     render json: response_data
   end
 
+  # /GET
+  # [get_all_messages_received_by_the_user APi]
+  # parameters: user_id
+  # @return [type] [description]
   def get_all_messages_received_by_the_user
     user = User.find_by_id(params[:user_id])
     messages = []
     if (user)
-      user.messages.each do |item|
-        messages << {:content => item["content"]}
+      user.message_recipient_users.each do |item|
+        message = Message.find(item[:message_id])
+        messages << {:content => message["content"]}
       end
     response_data = {
           :payload => {:messages => messages},
@@ -79,6 +117,10 @@ class UsersController < ApplicationController
     render json: response_data
   end
 
+  # POST
+  # [set_message_from_user_to_user API]
+  # parameters: from_user_id, to_user_id, content
+  # @return [type] [description]
   def set_message_from_user_to_user
     success = "SUCCESS"
     failure = "FAILURE"
@@ -107,6 +149,10 @@ class UsersController < ApplicationController
     render json: response_data
   end
 
+  # POST
+  # [subscribe_user_to_channel API]
+  # parameters: user_id, channel_id
+  # @return [type] [description]
   def subscribe_user_to_channel
     success = "SUCCESS"
     failure = "FAILURE"
@@ -133,13 +179,17 @@ class UsersController < ApplicationController
 
   end
 
-  def unsubscribe_user_to_channel
+  # /POST
+  # [unsubscribe_user_from_channel API]
+  # parameters: user_id, channel_id
+  # @return [type] [description]
+  def unsubscribe_user_from_channel
     success = "SUCCESS"
     failure = "FAILURE"
-    user = User.find(params[:user_id])
-    channel = Channel.find(params[:channel_id])
-    if (user && channel)
-        UserToChannelSubscription.delete_all(user: user,channel: channel)
+    userInstance = User.find(params[:user_id])
+    channelInstance = Channel.find(params[:channel_id])
+    if (userInstance && channelInstance)
+        UserToChannelSubscription.delete_all(user: userInstance,channel: channelInstance)
         response_data = {
               :payload => {},
               :meta => {},
@@ -159,13 +209,17 @@ class UsersController < ApplicationController
 
   end
 
+  # /POST
+  # [set_message_from_user_to_channel API]
+  # parameters: user_id, channel_id, content
+  # @return [type] [description]
   def set_message_from_user_to_channel
     success = "SUCCESS"
     failure = "FAILURE"
     isPrivate = "PRIVATE AND NOT SUBSCRIBED"
     notExists = "Does not Exist"
-    fromUser = User.find(params[:from_user_id])
-    toChannel = Channel.find(params[:to_channel_id])
+    fromUser = User.find(params[:user_id])
+    toChannel = Channel.find(params[:channel_id])
     if (fromUser && toChannel)
       if (toChannel.is_private)
         if(UserToChannelSubscription.find_by(user: fromUser,channel: toChannel))
@@ -212,40 +266,34 @@ class UsersController < ApplicationController
     render json: response_data
   end
 
-  # GET /users/1
-  # GET /users/1.json
-  def show
-    user = User.find(params[:id])
+  # /POST
+  # [toggle_user_status API]
+  # parameters: user_id
+  # @return [type] [description]
+  def toggle_user_status
+    user = User.find_by_id(params[:user_id])
+    render json: user.toggle!(:is_active)
   end
 
-  # GET /users/new
-  def new
-    user = User.new
+  # /GET
+  # [get_user_status API]
+  # parameters: user_id
+  # @return [type] [description]
+  def get_user_status
+    success = "SUCCESS"
+    user = User.find_by_id(params[:user_id])
+    status = []
+    status << {:is_active => user["is_active"]}
+    response_data = {
+          :payload => status,
+          :meta => {},
+          :error => {}, 
+          :status => success
+        }  
+    render json: response_data
   end
 
-  # GET /users/1/edit
-  def edit
-    user = User.find(params[:id])
-  end
 
-  # POST /users
-  # POST /users.json
-  def create
-    user = User.new(user_params)
-    user.save
-  end
-
-  # PATCH/PUT /users/1
-  # PATCH/PUT /users/1.json
-  def update
-    user.update(user_params)
-  end
-
-  # DELETE /users/1
-  # DELETE /users/1.json
-  def destroy
-    user.destroy
-  end
 
   private
     # Use callbacks to share common setup or constraints between actions.

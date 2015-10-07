@@ -12,12 +12,16 @@ class MessagesController < ApplicationController
     @message = Message.new
   end
 
+  # /GET
+  # [get_all_messages_for_the_channel API]
+  # parameters: channel_id
+  # @return [type] [description]
   def get_all_messages_for_the_channel
     channel = Channel.find_by_id(params[:channel_id])
     message = []
     if(channel)
       channel.messages.each do |item|
-        message << {:message => item["content"]}
+        message << {:user_id => item["user_id"], :message => item["content"]}
       end
       response_data = {
           :payload => { :message => message},
@@ -26,24 +30,12 @@ class MessagesController < ApplicationController
         }
     else
       response_data = {
-          :payload => {},
+          :payload => { :message => []},
           :meta => {},
           :error => {} 
         }
     end
     render json: response_data
-  end
-
-  # POST /messages
-  # POST /messages.json
-  def create
-    @message = Message.new(message_params)
-  end
-
-  # DELETE /messages/1
-  # DELETE /messages/1.json
-  def destroy
-    @message.destroy
   end
 
   def show_all_messages
