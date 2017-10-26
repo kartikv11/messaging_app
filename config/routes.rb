@@ -1,4 +1,24 @@
 Rails.application.routes.draw do
+  resources :user_to_channel_subscriptions
+  resources :user_to_channel_subscriptions
+  resources :user_to_channel_subscriptions
+  resources :message_recipient_channels
+  resources :channels
+  resources :message_recipient_users
+  resources :messages
+  resources :users
+  get 'get_all_users_for_the_channel' => 'users#get_all_users_for_the_channel'
+  get 'get_all_messages_received_by_the_user' => 'users#get_all_messages_received_by_the_user'
+  get 'get_all_messages_for_the_channel' => 'messages#get_all_messages_for_the_channel'
+  get 'get_all_channels_for_user' => 'users#get_all_channels_for_user'
+  get 'get_user_status' => 'users#get_user_status'
+  post 'set_message_from_user_to_user' => 'users#set_message_from_user_to_user'
+  post 'set_message_from_user_to_channel' => 'users#set_message_from_user_to_channel'
+  post 'subscribe_user_to_channel' => 'users#subscribe_user_to_channel'
+  post 'unsubscribe_user_from_channel' => 'users#unsubscribe_user_from_channel'
+  post 'register_user' => 'users#register_user'
+  post 'toggle_user_status' => 'users#toggle_user_status'
+  post 'register_channel' => 'channels#register_channel'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
